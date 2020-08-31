@@ -27,57 +27,88 @@ const postsData = [
         id: uuidv4(),
         title: 'My first blog post!',
         body: ' This is the body of a blog post',
-        published: '2020-08-22'
+        published: '2020-08-22',
+        author: userData[0].id
     },
     {
         id: uuidv4(),
         title: 'My second blog post!',
         body: ' This a new blog post to test querying',
-        published: '2020-08-23'
+        published: '2020-08-23',
+        author: userData[0].id
     },
     {
         id: uuidv4(),
         title: 'My Third blog post!',
         body: ' This is the body of a blog post and its dummy data!',
-        published: '2020-08-24'
+        published: '2020-08-24',
+        author: userData[1].id
     }
+]
+
+const commentData = [
+    {
+        id: uuidv4(),
+        text: 'This is a comment on a post!',
+        author: userData[1].id,
+        post: postsData[0].id
+    },
+    {
+        id: uuidv4(),
+        text: 'This is another comment on a post!',
+        author: userData[2].id,
+        post: postsData[0].id
+    },
+    {
+        id: uuidv4(),
+        text: 'Writing dummy data is boring!',
+        author: userData[2].id,
+        post: postsData[1].id
+    },
+    {
+        id: uuidv4(),
+        text: 'We need to generate better data!',
+        author: userData[0].id,
+        post: postsData[1].id
+    },
 ]
 
 const typeDefs = `
     type Query {
-        greeting(name: String): String
         me: User
         post: Post,
         add(a: Float!, b: Float!): Float!
-        grades: [Int!]!
         addNumbers(numbers: [Float]!): Float!
         users(query: String): [User!]!
         posts(query: String): [Post!]!
+        comments(query: String): [Comment!]!
     },
     type User {
         id: ID!
         name: String!
         email: String
         age: Int
+        posts: [Post!]!
+        comments: [Comment!]!
     }
     type Post {
         id: ID!
         title: String!
         body: String,
-        published: String
+        published: String,
+        author: User!
+        comments: [Comment!]!
+    }
+    type Comment {
+        id: ID!
+        text: String!
+        author: User!
+        post: Post!
     }
 `
 
 const resolvers = {
     Query: {
-        greeting(parent, args, ctx, info){
-            if(args.name){
-                //console.log(parent, args, ctx, info)
-                return `Hello ${args.name}, welcome!`
-            }else{
-                return "Hello"
-            }
-        },
         add(parent, args, ctx, info){
             return args.a + args.b
         },
@@ -89,9 +120,6 @@ const resolvers = {
                 })
             }
             return result
-        },
-        grades(){
-            return [75, 54, 88, 43]
         },
         me(){
             return {
@@ -106,7 +134,8 @@ const resolvers = {
                 id: uuidv4(),
                 title: 'My first blog post!',
                 body: ' This is the body of a blog post',
-                published: '2020-08-22'
+                published: '2020-08-22',
+                author: userData[0]
             }
         },
         users(parent, args, ctx, info){
@@ -124,7 +153,51 @@ const resolvers = {
                 })
             }
             return postsData
+        },
+        comments(parent, args, ctx, info){
+            if(args.query){
+                return commentData.filter((comment) => {
+                   return post.text.toLowerCase().includes(args.query.toLowerCase());
+                })
+            }
+            return commentData
         }
+    },
+    Post: {
+        author(parent, args, ctx, info){
+            return userData.find((user) =>{ 
+                return user.id === parent.author
+            })
+        },
+        comments(parent, args, ctx, info){
+            return commentData.filter((comment) =>{ 
+                return comment.post === parent.id
+            })
+        },
+    },
+    User: {
+        posts(parent, args, ctx, info){
+            return postsData.filter((post) =>{ 
+                return post.author === parent.id
+            })
+        },
+        comments(parent, args, ctx, info){
+            return commentData.filter((comment) =>{ 
+                return comment.author === parent.id
+            })
+        },
+    },
+    Comment:{
+        author(parent, args, ctx, info){
+            return userData.find((user) =>{ 
+                return user.id === parent.author
+            })
+        },
+        post(parent, args, ctx, info){
+            return postsData.find((post) =>{ 
+                return post.id === parent.post
+            })
+        },
     }
 }
 
