@@ -27,21 +27,21 @@ const postsData = [
         id: uuidv4(),
         title: 'My first blog post!',
         body: ' This is the body of a blog post',
-        published: '2020-08-22',
+        published: true,
         author: userData[0].id
     },
     {
         id: uuidv4(),
         title: 'My second blog post!',
         body: ' This a new blog post to test querying',
-        published: '2020-08-23',
+        published: true,
         author: userData[0].id
     },
     {
         id: uuidv4(),
         title: 'My Third blog post!',
         body: ' This is the body of a blog post and its dummy data!',
-        published: '2020-08-24',
+        published: false,
         author: userData[1].id
     }
 ]
@@ -82,7 +82,12 @@ const typeDefs = `
         users(query: String): [User!]!
         posts(query: String): [Post!]!
         comments(query: String): [Comment!]!
-    },
+    }
+    type Mutation {
+        createUser(name: String!, email: String!, age: Int): User!
+        createPost(title: String!, body: String!, published: Boolean!, author: String!): Post!
+        createComment(text: String!, author: String!, post: String!): Comment!
+    }
     type User {
         id: ID!
         name: String!
@@ -95,7 +100,7 @@ const typeDefs = `
         id: ID!
         title: String!
         body: String,
-        published: String,
+        published: Boolean,
         author: User!
         comments: [Comment!]!
     }
@@ -161,6 +166,65 @@ const resolvers = {
                 })
             }
             return commentData
+        }
+    },
+    Mutation:{
+        createUser(parent, args, ctx, info){
+            const emailInUse = userData.some((user) => {
+                return user.email === args.email
+            })
+            if(emailInUse){
+                throw new Error('Email already in use by another user');
+            }
+            const newUser = {
+                id:  uuidv4(),
+                name: args.name,
+                email: args.email,
+                age: args.age
+            }
+            userData.push(newUser);
+            return newUser;
+        },
+        createPost(parent, args, ctx, info){
+            const userExists = userData.some((user) => {
+                return user.id === args.author;
+            })
+            if(!userExists){
+                throw new Error(`User ${args.author} not found`);
+            }
+
+            const post = {
+                id: uuidv4(),
+                title: args.title,
+                body: args.body,
+                published: args.published,
+                author: args.author
+            };
+            postsData.push(post);
+            return post;
+        },
+        createComment(parent, args, ctx, info){
+
+            const userExists = userData.some((user) => {
+                return user.id === args.author;
+            })
+            if(!userExists){
+                throw new Error(`User ${args.author} not found`);
+            }
+            const postExists = postsData.some((post)=>{
+                return postsData.id = args.post;
+            })
+            if(!postExists){
+                throw new Error(`Post ${args.post} not found`);
+            }
+            const comment = {
+                id: uuidv4(),
+                text: args.text,
+                author: args.author,
+                post: args.post
+            };
+            commentData.push(comment);
+            return comment;
         }
     },
     Post: {

@@ -1,0 +1,48 @@
+
+# Write your query or mutation here
+mutation {
+  createUser(name: "My Name", email: "a@f.com", age: 55){
+    id
+    name
+    email
+    age
+  }
+}
+
+mutation{
+  createPost(title: "A new psot from mutation", body: "This is some text", published: false, author: "14ba89df-da0f-437d-b44d-588de1acb536" ){
+    id
+    title
+    body
+    published
+    author{
+      id
+      name
+    }
+    comments{
+      text
+      author{
+        name
+      }
+    }
+  }
+}
+
+mutation{
+  createComment(text: "A new comment about mutation", author: "017298a1-b92c-4046-8f48-9cd5bfdc1724", post: "35f57fcb-d0e5-4100-9447-c19c8b0a6785" ){
+    id
+    text
+    author{
+      id
+      name
+    }
+    post{
+      id
+      title
+      body
+      author{
+        name
+      }
+    }
+  }
+}
