@@ -212,7 +212,7 @@ const resolvers = {
                 throw new Error(`User ${args.author} not found`);
             }
             const postExists = postsData.some((post)=>{
-                return postsData.id = args.post;
+                return post.id === args.post;
             })
             if(!postExists){
                 throw new Error(`Post ${args.post} not found`);
