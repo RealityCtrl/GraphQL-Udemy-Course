@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.js --exec babel-node",
+    "start": "nodemon src/index.js --ext js,graphql --exec babel-node",
     "start1": "babel-node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +13,7 @@
   "dependencies": {
     "babel-cli": "6.26.0",
     "babel-preset-env": "1.7.0",
+    "babel-plugin-transform-object-rest-spread": "6.26.0",
     "graphql-yoga": "1.18.3",
     "uuid": "8.3.0",
     "nodemon": "2.0.4"
