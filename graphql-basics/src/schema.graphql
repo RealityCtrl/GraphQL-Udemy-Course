@@ -9,6 +9,9 @@ type Mutation {
     createUser(data: CreateUserInput!): User!
     createPost(data: CreatePostInput!): Post!
     createComment(data: CreateCommentInput!): Comment!
+    updateUser(id: String!, data: UpdateUserInput): User!
+    updatePost(id: String!, data: UpdatePostInput): Post!
+    updateComment(id: String!, data: UpdateCommentInput): Comment!
     deleteUser(userID: String!): User!
     deletePost(postID: String!): Post!
     deleteComment(commentID: String!): Comment!
@@ -20,6 +23,12 @@ input CreateUserInput {
     age: Int
 }
 
+input UpdateUserInput {
+    name: String
+    email: String
+    age: Int
+}
+
 input CreatePostInput {
     title: String!
     body: String
@@ -27,10 +36,22 @@ input CreatePostInput {
     author: String!
 }
 
+input UpdatePostInput {
+    title: String
+    body: String
+    published: Boolean
+    author: String
+}
+
 input CreateCommentInput {
     text: String!
     author: String!
     post: String!
+}
+
+input UpdateCommentInput {
+    text: String
+    author: String
 }
 
 type User {

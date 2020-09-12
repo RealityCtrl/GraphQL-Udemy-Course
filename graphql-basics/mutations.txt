@@ -74,3 +74,44 @@ mutation{
     }
   }
 }
+
+mutation{
+  updateUser(id:"7e91a5b1-51da-4f51-b0d7-32e8dfc2017d", data:{
+    name: "this is my new name",
+    email: "a@c.com",
+    age: 77
+  }){
+    id
+    name
+    email
+    age
+  },
+  updatePost(id:"594e7474-63c8-4e43-a568-98c46d70ce88",data:{
+    title: "A new title",
+    body: "Some new body test",
+    published: false
+  }){
+    id
+    title
+    body
+    published
+    author{
+      name
+    }
+    comments{
+      text
+      author{
+        name
+      } 
+    }
+  },
+  updateComment(id:"75c5184a-a4b3-46fb-a2d5-23208104cd95",data:{
+    text: "Thuis is an updated comment"
+  }){
+    id
+    text
+    author{
+      name
+    }
+  }
+}
