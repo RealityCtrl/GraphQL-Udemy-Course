@@ -1,0 +1,37 @@
+subscription{
+  comment(postID: "8d1b7b47-3ce5-4235-b4fb-6b0117bf5f3d"){
+    mutation,
+    data{
+        id
+        text
+        author{  
+          id
+          name
+        }
+        post{
+          title
+          body
+        }
+    }
+  }
+}
+
+subscription{
+  post{
+      mutation,
+      data	{
+        id
+      	title
+      	body
+      	published
+      	author{
+        		id
+       			name
+      	}
+     		 comments{
+        		id
+        		text
+      	}
+    	}
+  }
+}
